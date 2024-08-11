@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CUBE - Cryptographic Universal Blockchain Exchange</title>
+<style>
+::selection {
+    background-color: #f92672;
+    color: #ffffff;
+}
+
+html {
+    font-size: calc(0.85vw + 0.85vh);
+	overflow: hidden; 
+}
+
+html, body, * {
+	width: 100%; 
+	height: 100%; 
+	margin: 0; padding: 0; 
+	box-sizing: border-box; 
+	cursor: default; 
+}
+
+body {
+	background: #272822;
+	overflow-x: hidden; 
+	overflow-y: auto; 
+	padding: 3%; 
+}
+
+a {
+	text-decoration: none; 
+	cursor: pointer; 
+}
+
+.code-editor {
+    background: transparent; 
+    color: #f8f8f2;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    line-height: 1.6;
+}
+
+.code-editor pre {
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+    overflow-wrap: break-word;	
+}
+
+.code-editor .comment { color: #75715e; }
+.code-editor .function { color: #f92672; }
+.code-editor .property { color: #66d9ef; }
+.code-editor .string { color: #e6db74; }
+
+.code-editor-menu {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    color: #f8f8f2;
+	height: 45px;
+	display: flex; 
+	align-items: center; 
+	text-align: right; 
+	background: transparent; 
+}
+
+.code-editor-menu ul {
+	height: auto; 
+    list-style: none;
+    padding: 0;
+}
+
+.code-editor-menu li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.code-editor-menu a {
+    text-decoration: none;
+    color: #66d9ef;
+    transition: color 0.3s;
+}
+
+.code-editor-menu a:hover, .code-editor-menu a:focus {
+    color: #f92672;
+}
+
+.code-editor-menu a::before,
+.code-editor-menu a::after {
+    content: '[';
+    color: #75715e;
+}
+
+.code-editor-menu a::after {
+    content: ']';
+}
+
+.code-editor-menu a:hover::before,
+.code-editor-menu a:hover::after {
+    color: #f92672;
+}
+
+.cubewrapper {
+	display: flex; 
+	align-items: center; 
+	justify-content: center; 
+	perspective: 1000px;
+	position: absolute; 
+	top: 0; left: 0; right: 0; bottom: 0; 
+	width: 100%; height: 100%; 
+	pointer-events: none; 
+}
+
+#cube {
+    position: absolute;
+    width: calc(20vmin + 100px); /* Increasing vmin and adding a fixed pixel value */
+    height: calc(20vmin + 100px);
+    transform-style: preserve-3d;
+    transform: rotateX(-30deg) rotateY(-45deg);
+    transform-origin: 50% 50%;
+}
+
+.rotating {
+	animation: rotate 24s infinite linear;
+}
+
+.face {
+    position: absolute;
+    width: 100%; /* Ensures the face fills the cube */
+    height: 100%;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.front  { transform: translateZ(calc(10vmin + 50px)); }
+.back   { transform: rotateY(180deg) translateZ(calc(10vmin + 50px)); }
+.right  { transform: rotateY(90deg) translateZ(calc(10vmin + 50px)); }
+.left   { transform: rotateY(-90deg) translateZ(calc(10vmin + 50px)); }
+.top    { transform: rotateX(90deg) translateZ(calc(10vmin + 50px)); }
+.bottom { transform: rotateX(-90deg) translateZ(calc(10vmin + 50px)); }
+
+@keyframes rotate {
+    from { transform: rotateX(-30deg) rotateY(-45deg); }
+    to { transform: rotateX(-30deg) rotateY(315deg); }
+}
+
+.crt-screen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; 
+    z-index: 9999; 
+}
+
+.crt-screen-overlay::before {
+    content: "";
+    position: absolute;
+    top: -50%; 
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    background: radial-gradient(circle closest-side, transparent, black 70%);
+    opacity: 0.2; 
+    mix-blend-mode: screen; 
+    animation: curvature 10s infinite alternate ease-in-out;
+}
+
+.crt-screen-overlay::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.05) 0,
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+    opacity: 0.1; 
+    mix-blend-mode: overlay;
+}
+
+@keyframes curvature {
+    0%, 100% {
+        transform: scale(1.1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+}
+
+.scanlines {
+    overflow: hidden;
+    position: fixed;
+	top: 0; 
+	left: 0; 
+	right: 0; 
+	bottom: 0; 
+	width: 100%; 
+	height: 100%; 
+	z-index: 999; 
+	pointer-events: none; 
+}
+.scanlines:before,
+.scanlines:after {
+    display: block;
+    pointer-events: none;
+    content: "";
+    position: absolute;
+}
+.scanlines:before {
+    width: 100%;
+    height: 2px;
+    z-index: 2147483649;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0.75;
+    animation: scanline 6s linear infinite;
+}
+.scanlines:after {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2147483648;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.3) 51%
+    );
+    background-size: 100% 4px;
+    animation: scanlines 1s steps(60) infinite;
+}
+
+/* ANIMATE UNIQUE SCANLINE */
+@keyframes scanline {
+    0% {
+        transform: translate3d(0, 200000%, 0);
+    }
+}
+@keyframes scanlines {
+    0% {
+        background-position: 0 50%;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 12px; 
+    background-color: #1e1e2f; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #424242; 
+    border-radius: 6px; 
+    border: 3px solid #1e1e2f; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #636363; 
+}
+
+::-webkit-scrollbar-track {
+    background-color: #2e2e40; 
+    border-radius: 6px; 
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #424242 #2e2e40; 
+}
+</style>
+</head>
+<body>
+<nav class="code-editor-menu">
+    <ul>
+        <li><a href="https://etherscan.io/address/0x73a740d256188395d9af56db31ab1e9bb2f2978d#code" target="_blank"> Contract </a></li>
+        <li><a href="https://web3.builders" target="_blank"> Author </a></li>
+    </ul>
+</nav>
+<div class="code-editor">
+<pre>
+<span class="comment">// Cryptographic Universal Blockchain Exchange</span>
+<span class="function">CUBE</span> {
+   <span class="property">Type</span>: <span class="string">"Decentralized Liquidity Growth Protocol"</span>;
+   <span class="property">Core Function</span>: <span class="string">"Generates fees through cross-asset routing for MEV bots"</span>;
+   <span class="property">Objective</span>: <span class="string">"Enhances pool sizes and creates new pools to boost liquidity"</span>;
+   <span class="property">Benefit</span>: <span class="string">"Facilitates greater arbitrage opportunities across pools"</span>;
+   <span class="property">Revenue Usage</span>: <span class="string">"Reinvested to deepen liquidity and expand arbitrage opportunities"</span>;
+}
+
+<span class="comment">// Liquidity positions</span>
+<span class="function">liquidityPositions</span> [
+   <span class="property">0</span>: <a href="https://app.uniswap.org/pools/781046" target="_blank"><span class="string" style="cursor: pointer;">"781046"</span></a>,
+   <span class="property">1</span>: <a href="https://app.uniswap.org/pools/781047" target="_blank"><span class="string" style="cursor: pointer;">"781047"</span></a>,
+   <span class="property">2</span>: <a href="https://app.uniswap.org/pools/781048" target="_blank"><span class="string" style="cursor: pointer;">"781048"</span></a>,
+   <span class="property">3</span>: <a href="https://app.uniswap.org/pools/781257" target="_blank"><span class="string" style="cursor: pointer;">"781257"</span></a>
+]
+
+<span class="comment">/** Detailed Description</span>
+ <span class="comment">* CUBE operates as a fully-decentralized protocol designed to augment liquidity</span>
+ <span class="comment">* by generating transaction fees.</span>
+ <span class="comment">* These fees are sourced from profitable cross-asset routing opportunities exploited by MEV bots, </span>
+ <span class="comment">* arbitraging price discrepancies across various liquidity pools.</span>
+ <span class="comment">* The accumulated fees are strategically reinvested to expand existing pools and formulate new ones, </span>
+ <span class="comment">* thereby deepening market liquidity.</span>
+ <span class="comment">* This expansion directly enhances the scope for further MEV arbitrage, perpetuating a cycle </span>
+ <span class="comment">* of liquidity and opportunity growth. */</span>
+ &nbsp;
+ &nbsp;
+
+</pre>
+</div>
+<div class="cubewrapper">
+	<div id="cube">
+		<div class="face front"></div>
+		<div class="face back"></div>
+		<div class="face left"></div>
+		<div class="face right"></div>
+		<div class="face top"></div>
+		<div class="face bottom"></div>
+	</div>
+</div>
+<div class="crt-screen-overlay"></div>
+<div class="scanlines"></div>
+<script>
+let cube = document.getElementById('cube');
+
+cube.classList.add('rotating');
+
+document.addEventListener('mousemove', function(e) {
+    cube.classList.remove('rotating');
+
+    let xPercent = (e.clientX / window.innerWidth) * 2 - 1;
+    let yPercent = (e.clientY / window.innerHeight) * 2 - 1;
+
+    let xRotation = yPercent * -20;
+    let yRotation = xPercent * 20;
+
+    cube.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+});
+
+document.addEventListener('mouseleave', function() {
+    cube.classList.add('rotating');
+});
+</script>
+</body>
+</html>
