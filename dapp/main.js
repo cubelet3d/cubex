@@ -500,7 +500,7 @@ function createNotification(title, body) {
 }
 
 function appendToNotificationBody(notificationElement, content) {
-	adjustNotificationContainer(); 
+	adjustNotificationContainer();
 	
     if (notificationElement && notificationElement.getElementsByClassName) {
         const bodyDiv = notificationElement.getElementsByClassName('body')[0];
@@ -508,7 +508,7 @@ function appendToNotificationBody(notificationElement, content) {
             // Create a new span element to hold the new content
             const contentSpan = document.createElement('div');
 			contentSpan.className = 'content'; 
-            contentSpan.innerHTML = content;
+            contentSpan.innerHTML = `${content}<br><br>`;
             bodyDiv.appendChild(contentSpan); // Append the new content span to the body
         }
     }
