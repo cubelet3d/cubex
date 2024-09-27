@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CUBE - Cryptographic Universal Blockchain Exchange</title>
+   <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<nav class="code-editor-menu flex-box">
+	<div id="topUserBar" class="flex-box align-center topUserBar">
+		<span class="blockie"></span>
+		<span class="username">Unknown user</span>
+	</div>
+    <ul>
+	    <li><span id="docuButton" class="button">Documentation</span></li>
+        <li><span id="web3Connect" class="button">Connect</span></li>
+    </ul>
+</nav>
+<div id="welcomeScreen" class="code-editor welcome">
+<pre>
+<span class="comment">
+ ██████╗██╗   ██╗██████╗ ███████╗██╗  ██╗    ██████╗ ███╗   ██╗███████╗
+██╔════╝██║   ██║██╔══██╗██╔════╝╚██╗██╔╝   ██╔═══██╗████╗  ██║██╔════╝
+██║     ██║   ██║██████╔╝█████╗   ╚███╔╝    ██║   ██║██╔██╗ ██║█████╗  
+██║     ██║   ██║██╔══██╗██╔══╝   ██╔██╗    ██║   ██║██║╚██╗██║██╔══╝  
+╚██████╗╚██████╔╝██████╔╝███████╗██╔╝ ██╗██╗╚██████╔╝██║ ╚████║███████╗
+ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝</span>
+<span class="comment">/**</span>
+<span class="comment"> * Use this dApp to create your own CubeX and earn passive income from Uniswap V3 fees.</span>
+<span class="comment"> * Every new CubeX is paired with DAI, CUBE and an additional 'Volume token' of your choosing.</span>
+<span class="comment"> * It is recommended to choose a volatile token with high volume because as MEV bots route through your pools,</span>
+<span class="comment"> * you will essentially siphon off some of that action in fees.</span>
+<span class="comment"> * You can read more about how CubeX works by reading the documentation.</span>
+<span class="comment"> * </span>
+<span class="comment"> * Connect your wallet to continue...</span>
+<span class="comment"> */</span>
+</pre>
+</div>
+<div class="code-editor deploy hidden web3Element">
+<pre>
+<span class="comment">/**</span>
+<span class="comment"> * Deployment parameters for your token.</span>
+<span class="comment"> * @param {string} name - Name of the token.</span>
+<span class="comment"> * @param {string} symbol - Symbol of the token.</span>
+<span class="comment"> * @param {number} totalSupply - Total supply of tokens (optional).</span>
+<span class="comment"> * @param {string} volumeToken - Address of a high volume token (optional).</span>
+<span class="comment"> */</span>
+<span class="function">constructor</span> {
+   <span class="property">name</span>: "<span id="nameInput" class="string" contenteditable="true">myToken</span>";
+   <span class="property">symbol</span>: "<span id="symbolInput" class="string" contenteditable="true">TKN</span>";
+   <span class="property">totalSupply</span>: <span id="totalSupplyInput" class="integer" contenteditable="true">1000000000</span>;
+   <span class="property">volumeToken</span>: "<span id="volumeTokenInput" class="string" contenteditable="true">0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2</span>";
+}
+&nbsp;
+<span class="comment hidden web3Element">// Deploy with constructor args or reset</span>
+<span id="web3Deploy" class="web3Deploy hidden web3Element button">Deploy</span> <span id="web3Reset" class="web3Deploy hidden web3Element button">Reset</span>
+</pre>
+<div class="footer flex-box"><div class="networkDetails comment"></div><div class="currentGasPrice comment"></div></div>
+</div>
+<div class="code-editor tokenDetails hidden web3Element">
+<pre>
+<span class="comment">/**</span>
+<span class="comment"> * Token details</span>
+<span class="comment"> * @param {string} name - Name of the token.</span>
+<span class="comment"> * @param {string} symbol - Symbol of the token.</span>
+<span class="comment"> * @param {number} totalSupply - Total supply of tokens.</span>
+<span class="comment"> */</span>
+<span class="function tokenSymbol">loading...</span> {
+   <span class="property">name</span>: "<span id="nameInput" class="tokenName string">loading...</span>";
+   <span class="property">symbol</span>: "<span id="symbolInput" class="tokenSymbol string">loading...</span>";
+   <span class="property">totalSupply</span>: <span id="totalSupplyInput" class="totalSupply integer">loading...</span>;
+}
+<div id="initializeContainer" class="hidden initializeContainer">
+<span class="comment hidden web3Element">// Initialize to mint & create liquidity positions</span>
+<span id="web3Initialize" class="web3Initialize hidden web3Element button">Initialize</span>
+</div>
+<div id="liquidityPositionsContainer" class="liquidityPositionsContainer"></div>
+<div id="claimContainer" class="hidden claimContainer"><span class="comment">/**</span>
+<span class="comment hidden web3Element"> * Claim fees</span>
+<span class="comment hidden web3Element"> * Anyone can claim 2% of the fees generated across positions.</span>
+<span class="comment hidden web3Element"> * The owner of this CubeX gets the rest automatically.</span>
+<span class="comment hidden web3Element"> * Claim can be called once every 24 hours.</span>
+<span class="comment hidden web3Element"> */</span>
+<span id="web3Claim" class="web3Claim hidden web3Element button">Claim fees</span></div>
+<div id="embedContainer" class="embedContainer"></div>
+</pre>
+<div class="footer flex-box"><div class="networkDetails comment"></div><div class="currentGasPrice comment"></div></div>
+</div>
+<div class="cubewrapper">
+	<div id="cube">
+		<div class="face front"></div>
+		<div class="face back"></div>
+		<div class="face left"></div>
+		<div class="face right"></div>
+		<div class="face top"></div>
+		<div class="face bottom"></div>
+	</div>
+</div>
+<div id="documentationContainer" class="hidden documentationContainer">
+  <div class="header flex-box space-between">
+    <span class="docuHeadBtn title string">Documentation</span>
+    <span class="docuHeadBtn button" id="closeDocs">Close</span>
+  </div>
+  <div class="body">
+<div class="code-editor">
+<pre style="height: 100%; border: 0;" class="comment">
+CubeX is a decentralized platform for deploying ERC20 tokens with zero upfront costs. No coding required!
+
+When you deploy your token through CubeX, it’s automatically paired with DAI for stability, CUBE for added liquidity, and a volume token of your choosing for volatility. 
+
+These three positions give your token liquidity and trading volume right from the start, with no need to provide your own assets to fund the pool.
+
+
+<span class="glowing-separator">How It Works:</span>
+<span class="glowing-separator">===========================</span>
+
+Launch Without Liquidity: 
+
+Since CubeX uses Uniswap V3, there’s no need for initial liquidity. Your token will be instantly tradable as soon as you call the initialize function.
+
+Stable + Volatile Pairings: 
+
+DAI provides stability for your token price, while your chosen volume token (like a high-volume coin) adds volatility, creating opportunities for bots to trade and balance prices between pairs. This increases trading activity and fees for Your CubeX. 
+
+CUBE as a Reserve: 
+
+Every token launched through CubeX is also paired with CUBE, which acts as a backing reserve currency, adding depth and liquidity to all CubeX tokens.
+
+
+<span class="glowing-separator">Your Role:</span>
+<span class="glowing-separator">===========================</span>
+
+You Own the Token:
+ 
+You remain the owner of the token contract and can update information on third-party platforms like Etherscan, Dextools, etc.
+
+Claim Trading Fees: 
+
+As the deployer, you can claim the trading fees accumulated in the liquidity pools. Anyone can call the claim function, but they’ll only get 2%—the rest goes to you.
+Given the competitive nature of MEV bots it's more than likely they will automate the claiming process if there's money in it for them. This means you will generate money quite literally on autopilot. 
+
+
+<span class="glowing-separator">Steps to Create Your Token:</span>
+<span class="glowing-separator">===========================</span>
+
+1. Set your token’s name and symbol.
+
+2. Set the total supply - optional (default is 1b).
+
+3. Choose a volume token - optional (default is WETH).
+
+4. Deploy and initialize your token—no need for upfront liquidity.
+
+
+<span class="glowing-separator">Why Choose CubeX?</span>
+<span class="glowing-separator">===========================</span>
+
+Zero initial liquidity required: 
+
+With the Uniswap V3 protocol your token becomes tradable (buyable) immediately after initialization. 
+
+Locked Liquidity: 
+
+Liquidity pools are permanently locked in the contract, ensuring your project is safe from rug pulls.
+
+Generate Fees and Grow: 
+
+Your CubeX generates trading fees not only from people trading it, but also as MEV bots balance the pairs. MEV bots work 24/7 so if there's an imbalance, they will fix it- you accumulate trading fees every time this happens.
+
+CubeX makes token creation simple, fast, and secure—all without spending a penny!
+
+Currently supported chains: 
+
+Ethereum Mainnet, Arbitrum One, Base Mainnet 
+
+</pre>
+</div>
+  </div>
+</div>
+<div class="crt-screen-overlay"></div>
+<div class="scanlines"></div>
+<script src="web3.min.js"></script>
+<script src="blockies.js"></script>
+<script src="cubeABI.js"></script>
+<script src="bytecode.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
