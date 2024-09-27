@@ -370,7 +370,7 @@ html {
     border-left:  1px dashed darkolivegreen; 
     border-right: 1px dashed darkolivegreen; 
     border-top: 1px dashed darkolivegreen; 
-    height: 42.4px;  
+    height: auto;  
     padding: 12px;
 }
 
@@ -379,7 +379,7 @@ html {
 }
 
 .documentationContainer .body {
-    height: calc(100% - 42.4px);
+    height: auto; 
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px dashed darkolivegreen; 

@@ -221,6 +221,7 @@ btn_web3Claim.addEventListener("click", async function() {
 
 btn_docuButton.addEventListener("click", function() {
     docContainer.classList.remove('hidden');
+	adjustBodyHeight();
 });
 
 btn_closeDocs.addEventListener("click", function() {
@@ -768,3 +769,13 @@ document.querySelectorAll('.code-editor span[contenteditable="true"]').forEach(e
         }
     });
 });
+
+function adjustBodyHeight() {
+    const header = document.querySelector('.documentationContainer .header');
+    const body = document.querySelector('.documentationContainer .body');
+
+    if (header && body) {
+        const headerHeight = header.offsetHeight;
+        body.style.height = `calc(100% - ${headerHeight}px)`;
+    }
+}
