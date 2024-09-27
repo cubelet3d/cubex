@@ -82,7 +82,7 @@ a {
     word-wrap: break-word; 
     overflow-wrap: break-word;	
 	border: 1px dashed darkolivegreen; 
-	padding: 12px; 
+	padding: 1rem;  
 	height: auto; 
 }
 
@@ -104,7 +104,7 @@ a {
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
     color: #f8f8f2;
 	height: auto;
-	padding: 12px; 
+	padding: 1rem; 
 	border-left: 1px dashed darkolivegreen; 
 	border-right: 1px dashed darkolivegreen; 
 	border-top: 1px dashed darkolivegreen; 
@@ -141,11 +141,16 @@ a {
 }
 
 .notificationWrapper {
-	width: 512px;
+	/* width: 512px;
 	height: 256px;
 	position: absolute;
 	top: calc(50% - calc(256px / 2));
-	left: calc(50% - calc(512px / 2)); 
+	left: calc(50% - calc(512px / 2)); */ 
+    width: 80vw;
+    height: 80vh;
+    position: absolute;
+    top: 10vh;
+    left: 10vw;	
 	box-shadow: 5px 5px rgba(0, 0, 0, 0.8);
 	background: rgba(30, 30, 30, 0.8);
 	z-index: 1; 
@@ -155,8 +160,9 @@ a {
 	border-left:  1px dashed darkolivegreen; 
 	border-right: 1px dashed darkolivegreen; 
 	border-top: 1px dashed darkolivegreen; 
-	height: 35px;
-	padding: 8px; 
+	/* height: 35px; */ 
+	padding: 1rem;  
+	height: auto; 
 }
 
 .notificationWrapper .header .title {
@@ -169,8 +175,8 @@ a {
 
 .notificationWrapper .body {
 	border: 1px dashed darkolivegreen; 
-	padding: 8px;  
-	height: calc(100% - 35px); 
+	padding: 1rem;   
+	height: auto; 
 	overflow-x: hidden; 
 	overflow-y: auto; 
 }
@@ -371,7 +377,7 @@ html {
     border-right: 1px dashed darkolivegreen; 
     border-top: 1px dashed darkolivegreen; 
     height: auto;  
-    padding: 12px;
+    padding: 1rem; 
 }
 
 .documentationContainer .header .title {

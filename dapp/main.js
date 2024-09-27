@@ -500,6 +500,8 @@ function createNotification(title, body) {
 }
 
 function appendToNotificationBody(notificationElement, content) {
+	adjustNotificationContainer(); 
+	
     if (notificationElement && notificationElement.getElementsByClassName) {
         const bodyDiv = notificationElement.getElementsByClassName('body')[0];
         if (bodyDiv) {
@@ -778,4 +780,14 @@ function adjustBodyHeight() {
         const headerHeight = header.offsetHeight;
         body.style.height = `calc(100% - ${headerHeight}px)`;
     }
+}
+
+function adjustNotificationContainer() {
+    const notificationHeader = document.querySelector('.notificationWrapper .header');
+    const notificationBody = document.querySelector('.notificationWrapper .body');
+
+    if (notificationHeader && notificationBody) {
+        const notificationHeaderHeight = notificationHeader.offsetHeight;
+        notificationBody.style.height = `calc(100% - ${notificationHeaderHeight}px)`;
+    }	
 }
