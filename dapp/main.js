@@ -149,12 +149,12 @@ btn_web3Deploy.addEventListener("click", async function(event) {
 	
 	// Validate volumeToken for 18 decimals 
 	// Note: this probably isn't an issue any more as lowHigh is calculated taking decimals into account 
-	/* let token = new web3.eth.Contract(cubeABI, volumeToken);
+	let token = new web3.eth.Contract(cubeABI, volumeToken);
 	let decimals = await token.methods.decimals().call();
 	if(decimals !== '18') {
 		isValid = false;
 		errors.push('Volume token must have 18 decimal places.');
-	} */
+	}
 
     // If validation fails, display errors and exit function
     if (!isValid) {
@@ -790,4 +790,22 @@ function adjustNotificationContainer() {
         const notificationHeaderHeight = notificationHeader.offsetHeight;
         notificationBody.style.height = `calc(100% - ${notificationHeaderHeight}px)`;
     }	
+}
+
+async function cubePrice() {
+	const abi = [{"inputs":[],"name":"slot0","outputs":[{"internalType":"uint160","name":"sqrtPriceX96","type":"uint160"},{"internalType":"int24","name":"tick","type":"int24"},{"internalType":"uint16","name":"observationIndex","type":"uint16"},{"internalType":"uint16","name":"observationCardinality","type":"uint16"},{"internalType":"uint16","name":"observationCardinalityNext","type":"uint16"},{"internalType":"uint8","name":"feeProtocol","type":"uint8"},{"internalType":"bool","name":"unlocked","type":"bool"}],"stateMutability":"view","type":"function"}]; 
+	const address = "0x1b59e5e90b1d1d97b82e712D9FdC84ED69c83Ae7";
+	const contract = new web3.eth.Contract(abi, address); 
+	
+	try {
+        const { sqrtPriceX96 } = await contract.methods.slot0().call();
+        const n = (sqrtPriceX96 / 2**96) ** 2;
+        const price = 1 / n;
+        
+		return price; 
+	}
+	
+	catch(e) {
+		console.error(e); 
+	}
 }
