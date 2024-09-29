@@ -32,6 +32,10 @@ let web3;
 let contract; 
 let currentNetworkId; 
 
+// Match hard coded values for DAI low & high mcap range 
+let lowValue = 12938.5; // 12000
+let highValue = 1293850000; // 1290000000
+
 // Addresses 
 let wethAddress = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"; // set to mainnet for prettier UI upon first load 
 let uniswapFactory;
@@ -626,8 +630,8 @@ async function calculateLowHighMcaps(token, deployNotification) {
             }
 
             // Calculate low and high market caps for WETH/ETH in token units
-            const lowMCap = 12000 / ethPriceInDai;  // $12K market cap in ETH
-            const highMCap = 1290000000 / ethPriceInDai; // $1.29B market cap in ETH
+            const lowMCap = lowValue / ethPriceInDai;  // $12K market cap in ETH
+            const highMCap = highValue / ethPriceInDai; // $1.29B market cap in ETH
 
             const lowMCapWei = BigInt(Math.floor(lowMCap * Math.pow(10, 18))).toString();  // Convert to smallest unit (wei)
             const highMCapWei = BigInt(Math.floor(highMCap * Math.pow(10, 18))).toString(); // Convert to smallest unit (wei)
@@ -645,8 +649,8 @@ async function calculateLowHighMcaps(token, deployNotification) {
             }
 
             // Calculate low and high market caps for CUBE in token units
-            const lowMCap = 12000 / _cubePrice;  // $12K market cap in CUBE
-            const highMCap = 1290000000 / _cubePrice; // $1.29B market cap in CUBE
+            const lowMCap = lowValue / _cubePrice;  // $12K market cap in CUBE
+            const highMCap = highValue / _cubePrice; // $1.29B market cap in CUBE
 
             const lowMCapWei = BigInt(Math.floor(lowMCap * Math.pow(10, 18))).toString();  // Convert to smallest unit (wei)
             const highMCapWei = BigInt(Math.floor(highMCap * Math.pow(10, 18))).toString(); // Convert to smallest unit (wei)
@@ -663,8 +667,8 @@ async function calculateLowHighMcaps(token, deployNotification) {
 		
 		// appendToNotificationBody(deployNotification, `Calculating optimal low & high position range...`);
 		// matched with dai hard coded values in contract 
-        const lowMCap = await calculateTokenQuantityForMarketCap(token, pool, 12000); // $12K in token units
-        const highMCap = await calculateTokenQuantityForMarketCap(token, pool, 1290000000); // $1.29B in token units 
+        const lowMCap = await calculateTokenQuantityForMarketCap(token, pool, lowValue); // $12K in token units
+        const highMCap = await calculateTokenQuantityForMarketCap(token, pool, highValue); // $1.29B in token units 
 		
         const lowMCapWei = BigInt(Math.floor(lowMCap)).toString();
         const highMCapWei = BigInt(Math.floor(highMCap)).toString();
