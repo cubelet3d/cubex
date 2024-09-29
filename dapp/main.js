@@ -44,27 +44,30 @@ const networkData = {
 		explorerUrl: "https://etherscan.io/",
 		wethAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 		uniswapFactory: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-		wethDaiPool: "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11"
+		wethDaiPool: "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11",
+		cubeAddress: "0x73A740d256188395D9AF56db31AB1e9Bb2F2978D"
 	},
 	"42161": {
 		name: "Arbitrum One",
 		explorerUrl: "https://arbiscan.io/",
 		wethAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
 		uniswapFactory: "0xf1D7CC64Fb4452F05c498126312eBE29f30Fbcf9",
-		wethDaiPool: "0x8dca5a5DBA32cA529594d43F86ED4210EaD2Ed83"
+		wethDaiPool: "0x8dca5a5DBA32cA529594d43F86ED4210EaD2Ed83",
+		cubeAddress: "0x958c0aC283E00eC05Cd09ee627DEF0A81E32F084"
 	},
 	"8453": {
 		name: "Base Mainnet",
 		explorerUrl: "https://basescan.org/",
 		wethAddress: "0x4200000000000000000000000000000000000006",
 		uniswapFactory: "0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6",
-		wethDaiPool: "0xb2839134B8151964f19f6f3c7D59C70ae52852F5"
+		wethDaiPool: "0xb2839134B8151964f19f6f3c7D59C70ae52852F5",
+		cubeAddress: "0x71513ff59609353fa239623366412B1ADd18C09B"
 	}
 }
 
 let uniswapFactoryABI = [{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"getPair","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}];
 
-let genericABI = [{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
+let genericABI = [{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"token0","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"token1","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}];
 
 
 
@@ -149,12 +152,12 @@ btn_web3Deploy.addEventListener("click", async function(event) {
 	
 	// Validate volumeToken for 18 decimals 
 	// Note: this probably isn't an issue any more as lowHigh is calculated taking decimals into account 
-	let token = new web3.eth.Contract(cubeABI, volumeToken);
+	/* let token = new web3.eth.Contract(cubeABI, volumeToken);
 	let decimals = await token.methods.decimals().call();
 	if(decimals !== '18') {
 		isValid = false;
 		errors.push('Volume token must have 18 decimal places.');
-	}
+	} */
 
     // If validation fails, display errors and exit function
     if (!isValid) {
@@ -363,11 +366,17 @@ async function deployToken(name, symbol, supply, volumeToken) {
 			appendToNotificationBody(deployNotification, `Deployment stopped due to an error.`);
 			return;
 		}
+		
+		let lowHighCube = await calculateLowHighMcaps(cubeAddress, deployNotification); 
+		if (!lowHighCube) {
+			appendToNotificationBody(deployNotification, `Deployment stopped due to an error.`);
+			return;
+		}
 
 		// Fetch current gas price from the network
 		const currentGasPrice = await web3.eth.getGasPrice();
 		
-		console.log({name, symbol, supply, volumeToken, lowHigh});
+		console.log({name, symbol, supply, volumeToken, lowHigh, lowHighCube});
 		
 		let bytecode;
 
@@ -387,7 +396,7 @@ async function deployToken(name, symbol, supply, volumeToken) {
 		// Setup the transaction 
 		const deployTransaction = new web3.eth.Contract(cubeABI).deploy({
 			data: bytecode,
-			arguments: [name, symbol, supply, volumeToken, lowHigh]
+			arguments: [name, symbol, supply, volumeToken, lowHigh, lowHighCube]
 		});
 		
 		// Estimate gas & simulate deployment 
@@ -421,7 +430,7 @@ async function deployToken(name, symbol, supply, volumeToken) {
 				console.log(`Verifying contract...`);
 				appendToNotificationBody(deployNotification, `Verifying contract...`); 
 				
-				let encodedArguments = web3.eth.abi.encodeParameters(['string', 'string', 'uint256', 'address', 'uint256[]'], [name, symbol, supply, volumeToken, lowHigh]).substr(2);
+				let encodedArguments = web3.eth.abi.encodeParameters(['string', 'string', 'uint256', 'address', 'uint256[]', 'uint256[]'], [name, symbol, supply, volumeToken, lowHigh, lowHighCube]).substr(2);
 				
 				let contractData = {
 					contractAddress: contractAddress,
@@ -543,6 +552,7 @@ async function connectWeb3() {
 			volumeTokenInput.textContent = wethAddress; // Update UI input element 
 			uniswapFactory = networkData[chainId.toString()].uniswapFactory;
 			wethDaiPool = networkData[chainId.toString()].wethDaiPool;
+			cubeAddress = networkData[chainId.toString()].cubeAddress;
 
             const accounts = await window.ethereum.request({
                 method: 'eth_requestAccounts'
@@ -624,8 +634,27 @@ async function calculateLowHighMcaps(token, deployNotification) {
 
             return [lowMCapWei, highMCapWei]; // Return low and high caps in wei for WETH
         }
+		
+        // Handle CUBE
+        if (token.toLowerCase() === cubeAddress.toLowerCase()) {
+            const _cubePrice = await cubePrice();
 
-        // Otherwise, handle non-WETH tokens with existing logic	
+            if (!_cubePrice) {
+                appendToNotificationBody(deployNotification, `Could not fetch CUBE price.`);
+                throw new Error("Could not fetch CUBE price.");
+            }
+
+            // Calculate low and high market caps for CUBE in token units
+            const lowMCap = 12000 / _cubePrice;  // $12K market cap in CUBE
+            const highMCap = 1290000000 / _cubePrice; // $1.29B market cap in CUBE
+
+            const lowMCapWei = BigInt(Math.floor(lowMCap * Math.pow(10, 18))).toString();  // Convert to smallest unit (wei)
+            const highMCapWei = BigInt(Math.floor(highMCap * Math.pow(10, 18))).toString(); // Convert to smallest unit (wei)
+
+            return [lowMCapWei, highMCapWei]; // Return low and high caps in wei for CUBE
+        }		
+
+        // All other tokens 
 		const pool = await pairFor(token); 
 		if (!pool || pool === '0x0000000000000000000000000000000000000000') {
 			appendToNotificationBody(deployNotification, `Sorry, cannot figure out token price from V2 pools.`); 
@@ -633,8 +662,9 @@ async function calculateLowHighMcaps(token, deployNotification) {
         }
 		
 		// appendToNotificationBody(deployNotification, `Calculating optimal low & high position range...`);
-        const lowMCap = await calculateTokenQuantityForMarketCap(token, pool, 12000); // $12K in token units
-        const highMCap = await calculateTokenQuantityForMarketCap(token, pool, 1290000000); // $1.29B in token units 
+		// matched with dai hard coded values in contract 
+        const lowMCap = await calculateTokenQuantityForMarketCap(token, pool, 12938.5); // $12K in token units
+        const highMCap = await calculateTokenQuantityForMarketCap(token, pool, 1293850000); // $1.29B in token units 
 		
         const lowMCapWei = BigInt(Math.floor(lowMCap)).toString();
         const highMCapWei = BigInt(Math.floor(highMCap)).toString();
@@ -646,13 +676,15 @@ async function calculateLowHighMcaps(token, deployNotification) {
     }
 }
 
-async function calculateTokenQuantityForMarketCap(token, pool, usdAmount) {
+/* async function calculateTokenQuantityForMarketCap(token, pool, usdAmount) {
     const tokenContract = new web3.eth.Contract(genericABI, token);
     try {
         const priceInDai = await volumeTokenPrice(token, pool); // Get price of token in USD
         const tokenDecimals = await getTokenDecimals(tokenContract);
         const totalSupply = await tokenContract.methods.totalSupply().call();
         const totalSupplyInTokens = await convertToDecimalUnits(totalSupply, tokenDecimals);
+		
+		console.log({priceInDai, tokenDecimals, totalSupply, totalSupplyInTokens});
 
         // Calculate the number of tokens corresponding to the given USD market cap
         const numberOfTokens = usdAmount / priceInDai; // This gives you the number of tokens in regular units
@@ -663,9 +695,40 @@ async function calculateTokenQuantityForMarketCap(token, pool, usdAmount) {
         console.error(`Failed to calculate token quantity for market cap ${usdAmount} for ${token}:`, e);
         return null;
     }
+} */
+
+async function calculateTokenQuantityForMarketCap(token, pool, usdAmount) {
+    const tokenContract = new web3.eth.Contract(genericABI, token);
+    try {
+        // Get the price of the token in USD (via DAI)
+        const priceInDai = await volumeTokenPrice(token, pool);
+
+        if (!priceInDai) {
+            throw new Error(`Failed to get token price in DAI for token: ${token}`);
+        }
+
+        // Fetch the token's own decimals (e.g., 9, 18, etc.)
+        const tokenDecimals = await getTokenDecimals(tokenContract);
+
+        // Calculate how many tokens correspond to the given USD market cap in **native decimals**
+        const numberOfTokensInNativeDecimals = usdAmount / priceInDai;
+
+        // Convert to the smallest unit by multiplying by 10^tokenDecimals
+        const tokenQuantityInNativeSmallestUnits = numberOfTokensInNativeDecimals * Math.pow(10, tokenDecimals);
+
+        // Now scale the value to 18 decimals by dividing by 10^(tokenDecimals - 18)
+        const tokenQuantityIn18Decimals = BigInt(Math.floor(tokenQuantityInNativeSmallestUnits * Math.pow(10, 18 - tokenDecimals)));
+
+        console.log({ priceInDai, tokenDecimals, numberOfTokensInNativeDecimals, tokenQuantityIn18Decimals });
+
+        return tokenQuantityIn18Decimals.toString(); // Return as a string to avoid precision issues
+    } catch (e) {
+        console.error(`Failed to calculate token quantity for market cap ${usdAmount} for ${token}:`, e);
+        return null;
+    }
 }
 
-async function ethPrice() {
+/* async function ethPrice() {
     const contract = new web3.eth.Contract(genericABI, wethDaiPool);
     try {
         const reserves = await contract.methods.getReserves().call();
@@ -680,9 +743,41 @@ async function ethPrice() {
         console.error(e);
         return null;
     }
+} */
+async function ethPrice() {
+    const contract = new web3.eth.Contract(genericABI, wethDaiPool);
+    try {
+        const reserves = await contract.methods.getReserves().call();
+
+        // Check which reserve corresponds to WETH by comparing addresses
+        const token0 = await contract.methods.token0().call();
+        const token1 = await contract.methods.token1().call();
+
+        let ethInReserves;
+        let daiInReserves;
+
+        if (token0.toLowerCase() === wethAddress.toLowerCase()) {
+            ethInReserves = web3.utils.fromWei(reserves._reserve0);
+            daiInReserves = web3.utils.fromWei(reserves._reserve1);
+        } else if (token1.toLowerCase() === wethAddress.toLowerCase()) {
+            ethInReserves = web3.utils.fromWei(reserves._reserve1);
+            daiInReserves = web3.utils.fromWei(reserves._reserve0);
+        } else {
+            throw new Error("WETH not found in reserves.");
+        }
+
+        if (daiInReserves !== '0') {
+            return parseFloat(daiInReserves) / parseFloat(ethInReserves); // DAI per ETH
+        } else {
+            throw new Error('DAI reserves are zero, cannot calculate price.');
+        }
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
 }
 
-async function volumeTokenPrice(token, pool) {
+/* async function volumeTokenPrice(token, pool) {
     const contract = new web3.eth.Contract(genericABI, pool);
 	const contract2 = new web3.eth.Contract(genericABI, token);
 
@@ -700,6 +795,52 @@ async function volumeTokenPrice(token, pool) {
         const ethPriceInTokens = reserve0 / reserve1;
         const ethPriceInDai = await ethPrice(wethDaiPool); // Ensure wethDaiPool is defined and passed correctly
 
+        return ethPriceInDai / ethPriceInTokens; // Token price in $DAI
+    } catch (e) {
+        console.error(e);
+        return null; // Explicitly return null if there's an error
+    }
+} */
+async function volumeTokenPrice(token, pool) {
+    const contract = new web3.eth.Contract(genericABI, pool);
+    const tokenContract = new web3.eth.Contract(genericABI, token);
+
+    try {
+        const reserves = await contract.methods.getReserves().call();
+        const token0 = await contract.methods.token0().call();
+        const token1 = await contract.methods.token1().call();
+
+        const tokenDecimals = await getTokenDecimals(tokenContract);
+        const ethDecimals = 18; // ETH/WETH always has 18 decimals
+
+        let reserveToken, reserveEth;
+
+        // Check which token in the pair is WETH
+        if (token0.toLowerCase() === wethAddress.toLowerCase()) {
+            reserveEth = reserves._reserve0;
+            reserveToken = reserves._reserve1;
+        } else if (token1.toLowerCase() === wethAddress.toLowerCase()) {
+            reserveEth = reserves._reserve1;
+            reserveToken = reserves._reserve0;
+        } else {
+            throw new Error('Neither reserve is WETH, cannot calculate price.');
+        }
+
+        // Convert reserves to actual token units, accounting for decimals
+        const reserveTokenConverted = await convertToDecimalUnits(reserveToken, tokenDecimals);
+        const reserveEthConverted = await convertToDecimalUnits(reserveEth, ethDecimals);
+
+        if (reserveEthConverted === 0) {
+            throw new Error('ETH reserve is zero, cannot calculate price.');
+        }
+
+        // Calculate token price in ETH
+        const ethPriceInTokens = reserveTokenConverted / reserveEthConverted;
+
+        // Fetch ETH price in DAI (via the DAI-WETH pair or similar)
+        const ethPriceInDai = await ethPrice(wethDaiPool); // Ensure wethDaiPool is defined
+
+        // Calculate token price in DAI
         return ethPriceInDai / ethPriceInTokens; // Token price in $DAI
     } catch (e) {
         console.error(e);
@@ -794,18 +935,34 @@ function adjustNotificationContainer() {
 
 async function cubePrice() {
 	const abi = [{"inputs":[],"name":"slot0","outputs":[{"internalType":"uint160","name":"sqrtPriceX96","type":"uint160"},{"internalType":"int24","name":"tick","type":"int24"},{"internalType":"uint16","name":"observationIndex","type":"uint16"},{"internalType":"uint16","name":"observationCardinality","type":"uint16"},{"internalType":"uint16","name":"observationCardinalityNext","type":"uint16"},{"internalType":"uint8","name":"feeProtocol","type":"uint8"},{"internalType":"bool","name":"unlocked","type":"bool"}],"stateMutability":"view","type":"function"}]; 
-	const address = "0x1b59e5e90b1d1d97b82e712D9FdC84ED69c83Ae7";
-	const contract = new web3.eth.Contract(abi, address); 
 	
-	try {
+    let address;
+    let flipped = false;  // Flag for token flipping
+
+    if (currentNetworkId === 1) {
+        address = "0x1b59e5e90b1d1d97b82e712D9FdC84ED69c83Ae7";
+    } else if (currentNetworkId === 42161) {
+        address = "0xA839eE12F8C2346876FDA429Aed479EA13205673";
+        flipped = true;  // Tokens are flipped in the Arbitrum pool
+    } else if (currentNetworkId === 8453) {
+		address = "0x6389e554419188F277F750F5988302bcb73bd61f"; 
+	} else {
+        console.error("Unsupported network");
+        return null;
+    }
+
+    const contract = new web3.eth.Contract(abi, address);
+
+    try {
         const { sqrtPriceX96 } = await contract.methods.slot0().call();
         const n = (sqrtPriceX96 / 2**96) ** 2;
-        const price = 1 / n;
-        
-		return price; 
-	}
-	
-	catch(e) {
-		console.error(e); 
-	}
+
+        // Adjust price based on whether the tokens are flipped
+        const price = flipped ? n : 1 / n;
+
+        return price;
+    } catch (e) {
+        console.error("Error fetching price:", e);
+        return null;
+    }
 }

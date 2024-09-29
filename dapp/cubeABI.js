@@ -25,6 +25,11 @@ const cubeABI = [
 				"internalType": "uint256[]",
 				"name": "_lowHigh",
 				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_lowHighCube",
+				"type": "uint256[]"
 			}
 		],
 		"stateMutability": "nonpayable",
