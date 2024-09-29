@@ -33,8 +33,8 @@ let contract;
 let currentNetworkId; 
 
 // Match hard coded values for DAI low & high mcap range 
-let lowValue = 12938.5; // 12000
-let highValue = 1293850000; // 1290000000
+let lowValue = 12900; // 12000
+let highValue = 1290000000; 
 
 // Addresses 
 let wethAddress = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"; // set to mainnet for prettier UI upon first load 
