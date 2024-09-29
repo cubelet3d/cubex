@@ -663,8 +663,8 @@ async function calculateLowHighMcaps(token, deployNotification) {
 		
 		// appendToNotificationBody(deployNotification, `Calculating optimal low & high position range...`);
 		// matched with dai hard coded values in contract 
-        const lowMCap = await calculateTokenQuantityForMarketCap(token, pool, 12938.5); // $12K in token units
-        const highMCap = await calculateTokenQuantityForMarketCap(token, pool, 1293850000); // $1.29B in token units 
+        const lowMCap = await calculateTokenQuantityForMarketCap(token, pool, 12000); // $12K in token units
+        const highMCap = await calculateTokenQuantityForMarketCap(token, pool, 1290000000); // $1.29B in token units 
 		
         const lowMCapWei = BigInt(Math.floor(lowMCap)).toString();
         const highMCapWei = BigInt(Math.floor(highMCap)).toString();
@@ -717,11 +717,13 @@ async function calculateTokenQuantityForMarketCap(token, pool, usdAmount) {
         const tokenQuantityInNativeSmallestUnits = numberOfTokensInNativeDecimals * Math.pow(10, tokenDecimals);
 
         // Now scale the value to 18 decimals by dividing by 10^(tokenDecimals - 18)
-        const tokenQuantityIn18Decimals = BigInt(Math.floor(tokenQuantityInNativeSmallestUnits * Math.pow(10, 18 - tokenDecimals)));
+        // const tokenQuantityIn18Decimals = BigInt(Math.floor(tokenQuantityInNativeSmallestUnits * Math.pow(10, 18 - tokenDecimals)));
 
-        console.log({ priceInDai, tokenDecimals, numberOfTokensInNativeDecimals, tokenQuantityIn18Decimals });
+        console.log({ priceInDai, tokenDecimals, numberOfTokensInNativeDecimals, /*tokenQuantityIn18Decimals*/ });
 
-        return tokenQuantityIn18Decimals.toString(); // Return as a string to avoid precision issues
+        // return tokenQuantityIn18Decimals.toString(); // Return as a string to avoid precision issues
+		
+		return tokenQuantityInNativeSmallestUnits.toString(); 
     } catch (e) {
         console.error(`Failed to calculate token quantity for market cap ${usdAmount} for ${token}:`, e);
         return null;
