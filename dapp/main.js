@@ -93,6 +93,7 @@ const btn_web3Claim = document.getElementById("web3Claim");
 const btn_docuButton = document.getElementById("docuButton");
 const docContainer = document.getElementById("documentationContainer");
 const btn_closeDocs = document.getElementById("closeDocs");
+const btn_search = document.getElementById("searchButton"); 
 
 
 
@@ -234,6 +235,10 @@ btn_docuButton.addEventListener("click", function() {
 btn_closeDocs.addEventListener("click", function() {
     docContainer.classList.add('hidden');
 });
+
+btn_search.addEventListener("click", function() {
+	tokenSearch(); 
+}); 
 
 
 
@@ -971,4 +976,31 @@ async function cubePrice() {
         console.error("Error fetching price:", e);
         return null;
     }
+}
+
+async function tokenSearch() {
+	const searchNotification = createNotification("Search");
+	appendToNotificationBody(searchNotification, `Paste the token address below`);
+	appendToNotificationBody(searchNotification, `<span id="tokenSearchInput" class="tokenSearchInput" contenteditable="true"></span>`);
+	appendToNotificationBody(searchNotification, `<span id="tokenSearchButton" class="tokenSearchButton button">Search</span>`);
+	
+    const tokenSearchInput = document.getElementById('tokenSearchInput');
+    const tokenSearchButton = document.getElementById('tokenSearchButton');
+	
+    function isValidEthAddress(address) {
+        return /^0x[a-fA-F0-9]{40}$/.test(address);
+    }
+    
+    tokenSearchButton.addEventListener('click', function() {
+        const tokenAddress = tokenSearchInput.innerText.trim();
+
+        if (isValidEthAddress(tokenAddress)) {
+            const url = `https://cubex.one/dapp/?token=${tokenAddress}`;
+			appendToNotificationBody(searchNotification, `Opening token profile for ${tokenAddress}`);
+			tokenSearchInput.textContent = "";
+            window.open(url, '_blank');
+        } else {
+            appendToNotificationBody(searchNotification, `Invalid address!`);
+        }
+    });
 }
