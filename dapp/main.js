@@ -1004,3 +1004,27 @@ async function tokenSearch() {
         }
     });
 }
+
+async function funny() {
+  const yes = createNotification("Token list");
+
+  try {
+    const response = await fetch("https://dapp.cubex.one/verifiedContracts");
+    const contracts = await response.json();
+
+    // Iterate over each contract and add it to the notification body
+    contracts.forEach(contract => {
+      const { networkName, contractAddress } = contract;
+      const row = `
+        ${networkName}: 
+        <a href="https://cubex.one/dapp/?token=${contractAddress}" target="_blank">
+          ${contractAddress}
+        </a>
+      `;
+      appendToNotificationBody(yes, row);
+    });
+  } catch (error) {
+    console.error("Error fetching contracts:", error);
+    appendToNotificationBody(yes, "Failed to fetch contracts.");
+  }
+}
