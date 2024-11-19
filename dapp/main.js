@@ -1012,14 +1012,18 @@ async function funny() {
     const response = await fetch("https://dapp.cubex.one/verifiedContracts");
     const contracts = await response.json();
 
+    // Sort contracts by the `verifiedAt` field, latest first
+    contracts.sort((a, b) => new Date(b.verifiedAt) - new Date(a.verifiedAt));
+
     // Iterate over each contract and add it to the notification body
     contracts.forEach(contract => {
-      const { networkName, contractAddress } = contract;
+      const { networkName, contractAddress, verifiedAt } = contract;
       const row = `
-        ${networkName}: 
+        ${networkName}:
         <a href="https://cubex.one/dapp/?token=${contractAddress}" target="_blank">
           ${contractAddress}
-        </a>
+        </a> 
+        (${new Date(verifiedAt).toLocaleString()})
       `;
       appendToNotificationBody(yes, row);
     });

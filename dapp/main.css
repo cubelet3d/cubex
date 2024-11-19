@@ -30,6 +30,16 @@ a {
 	cursor: pointer; 
 }
 
+.notificationWrapper a {
+    text-decoration: none;
+    color: #66d9ef;
+    transition: color 0.3s;
+}
+
+.notificationWrapper a:hover, .notificationWrapper a:focus {
+    color: #f92672;
+}
+
 .disabled { pointer-events: none; opacity: 0.5; }
 .hidden { display: none; }
 .flex-box { display: flex; }
