@@ -48,6 +48,7 @@ a {
 
 .topUserBar {
 	height: auto; 
+	width: auto; 
 }
 
 #topUserBar.hidden, .flex-box.hidden {
