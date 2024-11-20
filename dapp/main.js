@@ -1022,11 +1022,12 @@ async function funny() {
 
     // Iterate over each contract and add it to the notification body
     contracts.forEach(contract => {
-      const { networkName, contractAddress, verifiedAt } = contract;
+      const { networkName, contractAddress, verifiedAt, name, symbol } = contract;
       const row = `
         ${networkName}:
+		${name}(${symbol}) 
         <a href="https://cubex.one/dapp/?token=${contractAddress}" target="_blank">
-          ${contractAddress}
+          ${formatAddress(contractAddress)}
         </a> 
         (${new Date(verifiedAt).toLocaleString()})
       `;
