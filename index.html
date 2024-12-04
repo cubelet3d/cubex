@@ -275,13 +275,54 @@ html {
     scrollbar-width: thin;
     scrollbar-color: #424242 #2e2e40; 
 }
+.dropdown {
+    position: relative;
+    display: inline-block;
+	width: auto; 
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #272822;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    min-width: 200px;
+	height: auto; 
+}
+
+.dropdown-content a {
+    color: #66d9ef;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #424242;
+    color: #f92672;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 </style>
 </head>
 <body>
 <nav class="code-editor-menu">
     <ul>
 		<li><a href="dapp" target="_blank"> Dapp </a></li>
-        <li><a href="https://etherscan.io/address/0x73a740d256188395d9af56db31ab1e9bb2f2978d#code" target="_blank"> Contract </a></li>
+        <!--<li><a href="https://etherscan.io/address/0x73a740d256188395d9af56db31ab1e9bb2f2978d#code" target="_blank"> Contract </a></li>-->
+<li>
+    <div class="dropdown">
+        <a href="#" onclick="return false;"> Contract </a>
+        <div class="dropdown-content">
+            <a href="https://etherscan.io/address/0x73a740d256188395d9af56db31ab1e9bb2f2978d#code" target="_blank"> Mainnet </a>
+            <a href="https://arbiscan.io/address/0x958c0aC283E00eC05Cd09ee627DEF0A81E32F084#code" target="_blank"> Arbitrum </a>
+            <a href="https://basescan.org/address/0x71513ff59609353fa239623366412B1ADd18C09B#code" target="_blank"> Base </a>
+        </div>
+    </div>
+</li>		
         <li><a href="https://web3.builders" target="_blank"> Author </a></li>
     </ul>
 </nav>
