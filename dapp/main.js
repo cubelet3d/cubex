@@ -468,7 +468,7 @@ async function deployToken(name, symbol, supply, volumeToken) {
 
 async function verifyContract(data) {
     try {
-        const response = await fetch('https://dapp.cubex.one/verifyContract', {
+        const response = await fetch('https://dapp.cubex.one:4443/verifyContract', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
