@@ -452,7 +452,7 @@ async function deployToken(name, symbol, supply, volumeToken) {
 					chainId: currentNetworkId
 				};
 				
-				verifyContract(contractData);
+				// verifyContract(contractData);
 				
 				transactionHandle.off('confirmation'); // stop listening 
 				appendToNotificationBody(deployNotification, `Finished!`); 
@@ -466,7 +466,7 @@ async function deployToken(name, symbol, supply, volumeToken) {
 	}
 }
 
-async function verifyContract(data) {
+/*async function verifyContract(data) {
     try {
         const response = await fetch('https://dapp.cubex.one:4443/verifyContract', {
             method: 'POST',
@@ -482,7 +482,7 @@ async function verifyContract(data) {
     } catch (error) {
         console.error('Failed to verify contract:', error);
     }
-}
+}*/
 
 function encodeConstructorArguments(web3, types, args) {
     return web3.eth.abi.encodeParameters(types, args);
