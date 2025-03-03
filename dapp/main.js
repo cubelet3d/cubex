@@ -94,7 +94,7 @@ const btn_docuButton = document.getElementById("docuButton");
 const docContainer = document.getElementById("documentationContainer");
 const btn_closeDocs = document.getElementById("closeDocs");
 const btn_search = document.getElementById("searchButton"); 
-const btn_list = document.getElementById("listButton");
+//const btn_list = document.getElementById("listButton");
 
 
 
