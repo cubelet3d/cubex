@@ -1010,7 +1010,7 @@ async function tokenSearch() {
     });
 }
 
-async function funny() {
+/*async function funny() {
   const yes = createNotification("Token list");
 
   try {
@@ -1037,4 +1037,4 @@ async function funny() {
     console.error("Error fetching contracts:", error);
     appendToNotificationBody(yes, "Failed to fetch contracts.");
   }
-}
+}*/
