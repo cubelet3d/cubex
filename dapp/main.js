@@ -241,9 +241,9 @@ btn_search.addEventListener("click", function() {
 	tokenSearch(); 
 }); 
 
-btn_list.addEventListener("click", function() {
+/*btn_list.addEventListener("click", function() {
 	funny(); 
-}); 
+});*/
 
 
 
